@@ -1,0 +1,16 @@
+# Build folders
+/build/
+CMakeFiles/
+CMakeCache.txt
+
+# Binaries
+*.exe
+*.out
+*.obj
+*.o
+
+*.ppm
+
+# IDE files
+.vscode/
+.vs/
