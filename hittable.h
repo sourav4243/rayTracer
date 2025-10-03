@@ -7,7 +7,7 @@ class hit_record {
     public:
         point3 p;
         vec3 normal;
-        double t;
+        double t;   // ray eqn: p(t) = origin + t*direction 
 };
 
 
