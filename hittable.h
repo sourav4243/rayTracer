@@ -5,8 +5,8 @@
 
 class hit_record {
     public:
-        point3 p;
-        vec3 normal;
+        point3 p;   // hit point in 3D place
+        vec3 normal;  // surface normal at hit point
         double t;   // ray eqn: p(t) = origin + t*direction 
 };
 
