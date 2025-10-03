@@ -61,3 +61,11 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ./build/rayTracer > image.ppm
 ```
+
+
+### This is what I do on my linux system
+```bash
+cmake -B build
+cmake --build build
+build/rayTracer > image.ppm
+```
