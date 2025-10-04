@@ -1,7 +1,7 @@
-#include "color.h"
-#include "vec3.h"
-#include "ray.h"
-#include<iostream>
+#include "all_you_need.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
 
 double hit_sphere(const point3& center, double radius, const ray&r){
     vec3 oc = center - r.origin();
