@@ -21,6 +21,7 @@ inline double degrees_to_radians(double degrees){
 
 // Common headers
 #include "color.h"
+#include "interval.h"
 #include "vec3.h"
 #include "ray.h"
 
