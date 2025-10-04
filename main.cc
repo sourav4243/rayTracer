@@ -7,7 +7,7 @@ color ray_color(const ray& r, const hittable& world){
     hit_record rec;
 
     // behind the hood, iterate through world hittable_list, call hittable of each object, then color that
-    if(world.hit(r, 0, infinity, rec)){
+    if(world.hit(r, interval(0, infinity), rec)){
         return 0.5 * (rec.normal + color(1,1,1));
     }
     vec3 unit_direction = unit_vector(r.direction());
