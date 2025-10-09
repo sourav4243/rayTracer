@@ -9,7 +9,7 @@ CMakeCache.txt
 *.obj
 *.o
 
-*.ppm
+# *.ppm
 
 # IDE files
 .vscode/
