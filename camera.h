@@ -92,7 +92,8 @@ class camera {
 
             // behind the hood, iterate through world hittable_list, call hittable of each object, then color that
             if(world.hit(r, interval(0.001, infinity), rec)){
-                vec3 direction = random_on_hemisphere(rec.normal);
+                // vec3 direction = random_on_hemisphere(rec.normal);
+                vec3 direction = rec.normal + random_unit_vector();         // correct rendering of Lambertian
                 return 0.5 * ray_color(ray(rec.p, direction), depth-1, world);   // using random ray direction for diffusion and 0.5 is used to half the brightness on each bounce
             }
             vec3 unit_direction = unit_vector(r.direction());
