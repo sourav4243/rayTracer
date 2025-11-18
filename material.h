@@ -71,7 +71,7 @@ class dielectric: public material {
             bool cannot_refract = ri * sin_theta > 1.0;
             vec3 direction;
 
-            if (cannot_refract)
+            if (cannot_refract || reflectance(cos_theta, ri) > random_double())
                 direction = reflect(unit_direction, rec.normal);
             else
                 direction = refract(unit_direction, rec.normal, ri);
@@ -84,6 +84,14 @@ class dielectric: public material {
         // Refractive index in vaccum or air, or the ratio of the material's refractive index over
         // the refractive index of the enclosing media
         double refraction_index;
+
+        // for real glass reflectivity that varies with angle
+        static double reflectance(double cosine, double refraction_index) {
+            // Use Schlick's approximation for reflectance.
+            auto r0 = (1 - refraction_index) / (1 + refraction_index);
+            r0 = r0*r0;
+            return r0 + (1-r0)*std::pow((1 - cosine),5);
+        }
 };
 
 #endif
