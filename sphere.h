@@ -8,9 +8,14 @@ class sphere: public hittable {
         point3 center;
         double radius;
         shared_ptr<material>mat;
+        aabb bbox;
 
     public:
-        sphere(const point3& center, double radius, shared_ptr<material>mat) : center(center), radius(std:: fmax(0, radius)), mat(mat) {}
+        sphere(const point3& center, double radius, shared_ptr<material>mat) 
+            : center(center), radius(std:: fmax(0, radius)), mat(mat) {
+                auto rvec = vec3(radius, radius, radius);
+                bbox = aabb(center - rvec, center + rvec);
+            }
 
         bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
             vec3 oc = center - r.origin();
