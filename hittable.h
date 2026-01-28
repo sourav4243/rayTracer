@@ -1,6 +1,8 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
+#include "aabb.h"
+
 class material;
 
 class hit_record {
@@ -32,6 +34,8 @@ class hittable {
         virtual ~hittable() = default;
 
         virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
+        virtual aabb bounding_box() const = 0;      // forces every hittable object to implement its own bounding box,
+                                                    // so BVH can work without knowing what the object actually is.
 };
 
 #endif
