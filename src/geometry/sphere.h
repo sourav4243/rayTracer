@@ -1,7 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "hittable.h"
+#include "geometry/hittable.h"
 
 class sphere: public hittable {
     private:

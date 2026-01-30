@@ -1,7 +1,7 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "aabb.h"
+#include "acceleration/aabb.h"
 
 class material;
 

@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "hittable.h"
-#include "material.h"
+#include "geometry/hittable.h"
+#include "material/material.h"
 
 class camera {
     public:

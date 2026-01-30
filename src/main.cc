@@ -1,11 +1,11 @@
-#include "all_you_need.h"
+#include "common/all_you_need.h"
 
-#include "bvh.h"
-#include "camera.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "material.h"
-#include "sphere.h"
+#include "acceleration/bvh.h"
+#include "core/camera.h"
+#include "geometry/hittable.h"
+#include "geometry/hittable_list.h"
+#include "material/material.h"
+#include "geometry/sphere.h"
 
 int main(){
     hittable_list world;
