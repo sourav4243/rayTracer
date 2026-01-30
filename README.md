@@ -93,3 +93,7 @@ cmake --build build
 The program writes a PPM image to stdout. <br>
 Redirect the output to a file and open it using any image viewer that supports PPM.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and
+suggested areas of improvement.
