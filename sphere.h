@@ -44,6 +44,8 @@ class sphere: public hittable {
             rec.mat = mat;
             return true;
         }
+
+        aabb bounding_box() const override { return bbox; }
 };
 
 #endif
