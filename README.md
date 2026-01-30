@@ -25,16 +25,18 @@ This project is a **CPU-based ray tracer written in C++** with a focus on
 A complex test scene consisting of **~500 spheres** was rendered before and
 after introducing acceleration structures.
 
-## Performance Comparison (Same Scene ~500 Spheres)
+### Performance Comparison (Same Scene ~500 Spheres)
 
 | Configuration              | Acceleration | Build Type | Render Time |
 |---------------------------|--------------|------------|-------------|
-| Brute Force               | None         | Release    | ~2h 57m     |
-| AABB + BVH                | Enabled      | Debug      | ~1h 25m     |
+| Brute Force               | None         | Release    | ~1h 10m     |
 | AABB + BVH                | Enabled      | Release    | **~12m 33s** |
+<!-- | Brute Force               | None         | Debug    | ~2h 57m     |
+| AABB + BVH                | Enabled      | Debug      | ~1h 25m     | -->
 
-This confirms a **significant performance improvement** while preserving
-rendering correctness.
+This confirms overall render time was reduced by approximately **82%** after introducing
+AABB and BVH, while producing identical visual output.
+
 
 ---
 
