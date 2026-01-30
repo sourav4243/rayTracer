@@ -1,11 +1,14 @@
-# Ray Tracer (Work In Progress)
+# Ray Tracer
 
-This project is a **CPU-based ray tracer**.
+This project is a **CPU-based ray tracer written in C++** with a focus on
+**physical correctness, clean architecture, and performance optimization**.
 
-At the current stage, the renderer includes:
+---
+
+## Features
 
 - Perspective camera with configurable field of view
-- Ray-sphere intersection
+- Ray–sphere intersection
 - Material models:
   - Lambertian (diffuse)
   - Metal (specular with fuzz)
@@ -13,40 +16,37 @@ At the current stage, the renderer includes:
 - Recursive ray tracing with depth limiting
 - Stochastic sampling for anti-aliasing
 - Image output in **PPM format**
-
-The implementation prioritizes **physical correctness and rendering accuracy** over performance.
-
----
-
-## Current Rendering State
-
-- The renderer is capable of producing visually correct images for complex scenes
-- A test render consisting of **~500 spheres** was successfully generated
-- That render took approximately **2 hours 57 minutes** on CPU
-- Runtime currently scales **linearly with the number of objects**, since:
-  - Every ray is tested against every object
-  - No spatial acceleration structures are implemented yet
-
-This performance is expected at this stage of the renderer.
+- **Spatial acceleration using AABB and BVH**
 
 ---
 
-## Render Output (Pre-Acceleration)
+## Rendering & Performance
 
-Below is an example render produced **before** adding any acceleration structures:
+A complex test scene consisting of **~500 spheres** was rendered before and
+after introducing acceleration structures.
 
-![Ray Tracer Output](/images/render_pre_bvh.png)
+## Performance Comparison (Same Scene ~500 Spheres)
+
+| Configuration              | Acceleration | Build Type | Render Time |
+|---------------------------|--------------|------------|-------------|
+| Brute Force               | None         | Release    | ~2h 57m     |
+| AABB + BVH                | Enabled      | Debug      | ~1h 25m     |
+| AABB + BVH                | Enabled      | Release    | **~12m 33s** |
+
+This confirms a **significant performance improvement** while preserving
+rendering correctness.
 
 ---
 
-## Next Steps
+## Render Output
 
-The next phase focuses on reducing ray-object intersection cost by introducing:
+### Pre-BVH (Brute Force)
+![Ray Tracer Output - Pre BVH](/images/Render_pre_bvh.png)
 
-- Axis-Aligned Bounding Boxes (AABB)
-- Bounding Volume Hierarchy (BVH)
+### Post-BVH (Accelerated)
+![Ray Tracer Output - Post BVH](/images/Render_post_bvh.png)
 
-These will significantly improve performance while keeping rendering behavior unchanged.
+---
 
 ## Requirements
 
@@ -73,17 +73,16 @@ cmake --build build --config Release
 ### Linux / macOS (GCC or Clang)
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake -B build
 cmake --build build
 ./build/rayTracer > image.ppm
 ```
+For optimized builds:
 
-
-### This is what I do on my linux system
 ```bash
-cmake -B build
+cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-build/rayTracer > image.ppm
+./build/rayTracer > image.ppm
 ```
 
 
@@ -92,13 +91,3 @@ build/rayTracer > image.ppm
 The program writes a PPM image to stdout. <br>
 Redirect the output to a file and open it using any image viewer that supports PPM.
 
-
-## Upcoming Work
-
-The next development phase focuses on **performance optimization**, starting with:
-
-- Axis-Aligned Bounding Boxes (AABB)
-- Bounding Volume Hierarchy (BVH)
-
-These changes will significantly reduce ray–object intersection cost and
-enable scalable rendering for larger scenes.
