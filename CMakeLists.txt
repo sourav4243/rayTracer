@@ -8,4 +8,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add executable (replace main.cpp with your source file)
-add_executable(rayTracer main.cc)
+add_executable(rayTracer src/main.cc)
+
+target_include_directories(rayTracer PRIVATE src)
