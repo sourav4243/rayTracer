@@ -1,4 +1,5 @@
 #include "common/all_you_need.h"
+#include "common/stats.h"
 
 #include "acceleration/bvh.h"
 #include "core/camera.h"
@@ -6,6 +7,9 @@
 #include "geometry/hittable_list.h"
 #include "material/material.h"
 #include "geometry/sphere.h"
+
+uint64_t ray_object_tests = 0;
+uint64_t bvh_node_tests  = 0;
 
 int main(){
     hittable_list world;
@@ -66,4 +70,7 @@ int main(){
     cam.focus_dist    = 10.0;
 
     cam.render(world);
+
+    std::cerr << "Ray-Object tests: " << ray_object_tests <<std::endl;
+    std::cerr << "BVH node tests: " << bvh_node_tests <<std::endl;
 }
