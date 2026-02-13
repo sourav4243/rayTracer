@@ -4,6 +4,12 @@
 #include "geometry/hittable.h"
 #include "material/material.h"
 
+#include <thread>
+#include <vector>
+#include <mutex>
+#include <atomic>
+#include <chrono>
+
 class camera {
     public:
         double aspect_ratio = 1.0;  // Ratio of image width over height
@@ -22,20 +28,61 @@ class camera {
         void render(const hittable& world){
             initialize();   // call initialize before working of render
 
-            std::cout<< "P3\n" << image_width << ' ' << image_height << "\n255\n";
+            // Determine number of threads
+            const unsigned int num_threads = std::thread::hardware_concurrency();
+            std::vector<std:: thread> threads;
 
-            for(int j=0; j<image_height; j++){
-                std::clog<<"\rScanlines remaining: "<< (image_height-j) << ' ' << std::flush; // progress bar
-                for(int i=0; i<image_width; i++){
-                    color pixel_color(0, 0, 0);
-                    for(int sample=0; sample<samples_per_pixel; sample++){
-                        ray r = get_ray(i, j);
-                        pixel_color += ray_color(r, max_depth, world);
+            // Pre-allocate pixel buffer - flat 1D array to avoid false sharing
+            std::vector<color> pixel_buffer(image_height * image_width);
+
+            // Atomic counter
+            std::atomic<int> rows_completed(0);
+
+            auto render_rows = [&](int start_row, int end_row) {
+                auto start_time = std::chrono::high_resolution_clock::now();
+
+                for(int j=start_row; j<end_row; j++){
+                    for(int i=0; i<image_width; i++){
+                        color pixel_color(0, 0, 0);
+                        for(int sample=0; sample<samples_per_pixel; sample++){
+                            ray r = get_ray(i, j);
+                            pixel_color += ray_color(r, max_depth, world);
+                        }
+                        pixel_buffer[j * image_width + i] = pixel_samples_scale * pixel_color;
                     }
-                    write_color(std::cout, pixel_samples_scale * pixel_color);
+
+                    int completed = ++rows_completed;
+                    if (completed % 5 == 0){
+                        std::clog << "\rScanlines remaining: " << (image_height - completed) << ' ' << std::flush;
+                    }
                 }
+
+                auto end_time = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+                std::clog << "\nThread completed in " << duration << "ms\n";
+            };
+
+            // Divide work
+            int rows_per_thread = image_height / num_threads;
+            int remaining_rows = image_height % num_threads;
+            
+            int start_row = 0;
+            for(unsigned int t = 0; t < num_threads; t++){
+                int end_row = start_row + rows_per_thread + (t < remaining_rows ? 1 : 0);
+                threads.emplace_back(render_rows, start_row, end_row);
+                start_row = end_row;
             }
 
+            // Join threads
+            for(auto& thread: threads){
+                thread.join();
+            }
+
+            // Output
+            std::cout<< "P3\n" << image_width << ' ' << image_height << "\n255\n";
+            for(size_t i = 0; i < pixel_buffer.size(); i++){
+                write_color(std::cout, pixel_buffer[i]);
+            }
             std::clog << "\rDone.                \n";    // progress bar
         }
 
