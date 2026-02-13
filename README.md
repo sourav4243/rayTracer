@@ -20,22 +20,52 @@ This project is a **CPU-based ray tracer written in C++** with a focus on
 
 ---
 
-## Rendering & Performance
+## Branch Structure
 
-A complex test scene consisting of **~500 spheres** was rendered before and
-after introducing acceleration structures.
+This repository maintains two implementations:
 
-### Performance Comparison (Same Scene ~500 Spheres)
+- `main` → Single-threaded renderer (baseline implementation)
+- `feature/multithread` → Multithreaded renderer (parallelized version built on top of the baseline)
 
-| Configuration              | Acceleration | Build Type | Render Time |
-|---------------------------|--------------|------------|-------------|
-| Brute Force               | None         | Release    | ~1h 10m     |
-| AABB + BVH                | Enabled      | Release    | **~12m 33s** |
-<!-- | Brute Force               | None         | Debug    | ~2h 57m     |
-| AABB + BVH                | Enabled      | Debug      | ~1h 25m     | -->
+### How to Switch Between Versions
 
-This confirms overall render time was reduced by approximately **82%** after introducing
-AABB and BVH, while producing identical visual output.
+Clone to repo:
+```bash
+git clone https://github.com/sourav4243/rayTracer.git
+cd rayTracer
+```
+
+To use the **single-threaded version** (at root of project):
+
+```bash
+git checkout main
+```
+
+To use the **multithreaded version** (at root of project):
+```bash
+git checkout feature/multithread
+```
+
+---
+
+## Performance Evaluation
+
+A complex test scene consisting of **~500 spheres** was rendered under multiple configurations to evaluate acceleration and parallelization strategies.
+
+_All test counts shown in **billions (10⁹)**_
+
+| Method                   | Threads        | Ray–Object Tests (×10⁹) | BVH Node Tests (×10⁹) | Render Time |
+|--------------------------|---------------|--------------------------|------------------------|-------------|
+| Brute Force (No BVH)     | 1             | **533.19**               | —                      | **52m 20s** |
+| BVH (Random Axis Split)  | 1             | **7.03**                 | **52.22**              | **9m 47s**  |
+| BVH (Longest Axis Split) | 1             | **5.28**                 | **44.31**              | **8m 57s**  |
+| BVH (Longest Axis Split) | Multi-threaded| **2.23**                 | **8.94**               | **8m 40s**  |
+
+### Key Findings
+
+- BVH reduced ray–object intersection tests from **~533 billion** to approximately **~5 billion**, achieving nearly a **100× reduction** in expensive geometric operations.
+- Longest-axis splitting demonstrated better spatial partitioning efficiency than random-axis splitting.
+- Multithreading reduced wall-clock render time by distributing workload across CPU cores.
 
 
 ---
@@ -74,12 +104,19 @@ cmake --build build --config Release
 
 ### Linux / macOS (GCC or Clang)
 
+Single-thread Debug build
 ```bash
 cmake -B build
 cmake --build build
 ./build/rayTracer > image.ppm
 ```
-For optimized builds:
+Multi-thread Debug build
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+./build/rayTracer > image.ppm
+```
+For optimized builds (same for both singe and multi thread version):
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
