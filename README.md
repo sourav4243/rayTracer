@@ -1,7 +1,28 @@
 # Ray Tracer
+## Simulates real-world physics of light to generate realistic images
+This project is a **CPU-based ray tracer written in C++** with a focus on **physical correctness, clean architecture, and performance optimization**.
 
-This project is a **CPU-based ray tracer written in C++** with a focus on
-**physical correctness, clean architecture, and performance optimization**.
+---
+
+## Render Output
+
+### BVH Comparison
+
+| Pre-BVH | Post-BVH |
+|--------|----------|
+| ![](/images/pre_bvh.jpeg) | ![](/images/post_bvh.jpeg) |
+
+---
+
+### More Scenes
+
+| Scene 1 | Scene 2 |
+|--------|--------|
+| ![](/images/render3.png) | ![](/images/render2.png) |
+
+| Scene 3 | Scene 4 |
+|--------|--------|
+| ![](/images/render1.png) | ![](/images/render4.png) |
 
 ---
 
@@ -66,28 +87,6 @@ _All test counts shown in **billions (10⁹)**_
 - BVH reduced ray–object intersection tests from **~533 billion** to approximately **~5 billion**, achieving nearly a **100× reduction** in expensive geometric operations.
 - Longest-axis splitting demonstrated better spatial partitioning efficiency than random-axis splitting.
 - Multithreading reduced wall-clock render time by distributing workload across CPU cores.
-
----
-
-## Render Output
-
-### BVH Comparison
-
-| Pre-BVH | Post-BVH |
-|--------|----------|
-| ![](/images/pre_bvh.jpeg) | ![](/images/post_bvh.jpeg) |
-
----
-
-### More Scenes
-
-| Scene 1 | Scene 2 |
-|--------|--------|
-| ![](/images/render3.png) | ![](/images/render2.png) |
-
-| Scene 3 | Scene 4 |
-|--------|--------|
-| ![](/images/render1.png) | ![](/images/render4.png) |
 
 ---
 
