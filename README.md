@@ -67,16 +67,27 @@ _All test counts shown in **billions (10⁹)**_
 - Longest-axis splitting demonstrated better spatial partitioning efficiency than random-axis splitting.
 - Multithreading reduced wall-clock render time by distributing workload across CPU cores.
 
-
 ---
 
 ## Render Output
 
-### Pre-BVH (Brute Force)
-![Ray Tracer Output - Pre BVH](/images/Render_pre_bvh.png)
+### BVH Comparison
 
-### Post-BVH (Accelerated)
-![Ray Tracer Output - Post BVH](/images/Render_post_bvh.png)
+| Pre-BVH | Post-BVH |
+|--------|----------|
+| ![](/images/pre_bvh.jpeg) | ![](/images/post_bvh.jpeg) |
+
+---
+
+### More Scenes
+
+| Scene 1 | Scene 2 |
+|--------|--------|
+| ![](/images/render3.png) | ![](/images/render2.png) |
+
+| Scene 3 | Scene 4 |
+|--------|--------|
+| ![](/images/render1.png) | ![](/images/render4.png) |
 
 ---
 
