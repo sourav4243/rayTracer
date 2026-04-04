@@ -5,8 +5,30 @@
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat)
 ![Platform](https://img.shields.io/badge/platform-Windows%20|%20Linux%20|%20macOS-lightgrey?style=flat)
 
-This project is a **CPU-based ray tracer written in C++** with a focus on
-**physical correctness, clean architecture, and performance optimization**.
+## Simulates real-world physics of light to generate realistic images
+This project is a **CPU-based ray tracer written in C++** with a focus on **physical correctness, clean architecture, and performance optimization**.
+
+---
+
+## Render Output
+
+### BVH Comparison
+
+| Pre-BVH | Post-BVH |
+|--------|----------|
+| ![](/images/pre_bvh.jpeg) | ![](/images/post_bvh.jpeg) |
+
+---
+
+### More Scenes
+
+| Scene 1 | Scene 2 |
+|--------|--------|
+| ![](/images/render3.png) | ![](/images/render2.png) |
+
+| Scene 3 | Scene 4 |
+|--------|--------|
+| ![](/images/render1.png) | ![](/images/render4.png) |
 
 ---
 
@@ -71,17 +93,6 @@ _All test counts shown in **billions (10⁹)**_
 - BVH reduced ray–object intersection tests from **~533 billion** to approximately **~5 billion**, achieving nearly a **100× reduction** in expensive geometric operations.
 - Longest-axis splitting demonstrated better spatial partitioning efficiency than random-axis splitting.
 - Multithreading reduced wall-clock render time by distributing workload across CPU cores.
-
-
----
-
-## Render Output
-
-### Pre-BVH (Brute Force)
-![Ray Tracer Output - Pre BVH](/images/Render_pre_bvh.png)
-
-### Post-BVH (Accelerated)
-![Ray Tracer Output - Post BVH](/images/Render_post_bvh.png)
 
 ---
 
