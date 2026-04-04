@@ -1,5 +1,10 @@
 # Ray Tracer
 
+![C++](https://img.shields.io/badge/C++-17-00599C?style=flat&logo=cplusplus&logoColor=white)
+![CMake](https://img.shields.io/badge/CMake-3.10+-064F8C?style=flat&logo=cmake&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat)
+![Platform](https://img.shields.io/badge/platform-Windows%20|%20Linux%20|%20macOS-lightgrey?style=flat)
+
 This project is a **CPU-based ray tracer written in C++** with a focus on
 **physical correctness, clean architecture, and performance optimization**.
 
@@ -59,7 +64,7 @@ _All test counts shown in **billions (10⁹)**_
 | Brute Force (No BVH)     | 1             | **533.19**               | —                      | **52m 20s** |
 | BVH (Random Axis Split)  | 1             | **7.03**                 | **52.22**              | **9m 47s**  |
 | BVH (Longest Axis Split) | 1             | **5.28**                 | **44.31**              | **8m 57s**  |
-| BVH (Longest Axis Split) | Multi-threaded| **2.23**                 | **8.94**               | **8m 40s**  |
+| BVH (Longest Axis Split) | Multi-threaded| **5.28**                 | **44.31**               | **3m 6s**  |
 
 ### Key Findings
 
