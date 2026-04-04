@@ -6,6 +6,7 @@
 #include<limits>
 #include<memory>
 #include<random>
+#include<thread>
 
 // C++ std using
 using std:: make_shared;
@@ -22,8 +23,19 @@ inline double degrees_to_radians(double degrees){
 
 inline double random_double(){
     // Returns a random real in [0, 1)
+    static thread_local std::mt19937 generator(
+        []{
+            uint64_t x = std::hash<std::thread::id>{}(std::this_thread::get_id());
+            x ^= x >> 30;
+            x *= 0xbf58476d1ce4e5b9ULL;
+            x ^= x >> 27;
+            x *= 0x94d049bb133111ebULL;
+            x ^= x >> 31;
+            return (uint32_t)x;
+        }()
+    );
+
     static thread_local std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    static thread_local std::mt19937 generator(std::random_device{}());
     return distribution(generator);
 }
 
