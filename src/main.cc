@@ -7,160 +7,110 @@
 #include "material/material.h"
 #include "geometry/sphere.h"
 
-uint64_t thread_local ray_object_tests = 0;
-uint64_t thread_local bvh_node_tests = 0;
+thread_local uint64_t ray_object_tests = 0;
+thread_local uint64_t bvh_node_tests  = 0;
 
 int main() {
     hittable_list world;
 
-    // Materials
-    auto ocean_floor = make_shared<metal>(color(0.03, 0.04, 0.07), 0.50);
-    auto moon_glass = make_shared<dielectric>(1.45);
-    auto silver_mirror = make_shared<metal>(color(0.90, 0.92, 0.95), 0.00);
-    auto silver_rough = make_shared<metal>(color(0.78, 0.82, 0.88), 0.08);
-    auto rock_mat = make_shared<lambertian>(color(0.10, 0.10, 0.13));
-    auto foam_mat = make_shared<lambertian>(color(0.88, 0.90, 0.94));
+    auto surface = make_shared<metal>(color(0.988, 0.663, 0.541), 0.05);
+    world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, surface));
 
-    world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, ocean_floor));
+    auto chrome_mirror  = make_shared<metal>(color(0.92, 0.92, 0.94), 0.00);
+    auto chrome_diffuse = make_shared<metal>(color(0.80, 0.80, 0.83), 0.28);
+    auto chrome_semi    = make_shared<metal>(color(0.86, 0.86, 0.89), 0.10);
 
-    // The Moon - r=11
-    double moon_radius = 11.0;
-    world.add(make_shared<sphere>(
-        point3(0.0, moon_radius + 1.2, -55.0),
-        moon_radius,
-        moon_glass
-    ));
+    auto gold_mirror    = make_shared<metal>(color(0.95, 0.80, 0.28), 0.00);
+    auto gold_diffuse   = make_shared<metal>(color(0.88, 0.72, 0.22), 0.30);
+    auto gold_semi      = make_shared<metal>(color(0.92, 0.76, 0.25), 0.10);
 
-    // Silver Sea - inner ring
-    {
-        double spacing = 0.52;
-        double r = 0.26;
-        int nx = 90;
-        int nz = 110;
+    auto rose_mirror    = make_shared<metal>(color(0.92, 0.72, 0.62), 0.00);
+    auto rose_diffuse   = make_shared<metal>(color(0.85, 0.65, 0.56), 0.25);
 
-        for (int ix = -nx / 2; ix < nx / 2; ix++) {
-            for (int iz = 0; iz < nz; iz++) {
-                double cx = ix * spacing + random_double(-0.04, 0.04);
-                double cz = -2.0 - iz * spacing + random_double(-0.04, 0.04);
+    struct Ball { double x, z, R; shared_ptr<material> mat; };
 
-                double wave =
-                    0.06 * std::sin(cx * 1.8) * std::cos(cz * 1.3) +
-                    0.04 * std::sin(cx * 3.1 + cz * 2.0);
+    Ball heroes[] = {
+        {  0.0,   0.0,  1.20,  chrome_mirror  },
+        { -2.8,   0.3,  1.10,  gold_mirror    },
+        {  2.6,  -0.2,  1.00,  gold_diffuse   },
+        { -1.5,   2.5,  1.05,  chrome_diffuse },
+        {  2.0,   2.8,  0.95,  rose_mirror    },
+    };
 
-                double cy = r + wave;
-
-                auto mat = ((ix + iz) % 3 == 0) ? silver_rough : silver_mirror;
-
-                world.add(make_shared<sphere>(point3(cx, cy, cz), r, mat));
-            }
-        }
+    for (auto& b : heroes) {
+        double cy = b.R; 
+        world.add(make_shared<sphere>(point3(b.x, cy, b.z), b.R, b.mat));
     }
 
-    // Silver Sea — outer ring
-    {
-        double r = 0.38;
-        double spacing = 0.72;
-        int nx = 60;
-        int nz = 40;
+    Ball mediums[] = {
+        {  1.2,   1.2,  0.60,  chrome_mirror  },
+        { -1.4,   1.0,  0.55,  gold_semi      },
+        {  3.8,   1.0,  0.62,  chrome_semi    },
+        { -3.8,   1.2,  0.58,  gold_mirror    },
+        {  0.5,  -1.5,  0.52,  rose_diffuse   },
+        { -0.8,  -1.3,  0.48,  chrome_diffuse },
+        {  4.2,  -0.5,  0.50,  gold_diffuse   },
+        { -4.0,  -0.3,  0.54,  chrome_mirror  },
+    };
 
-        for (int ix = -nx / 2; ix < nx / 2; ix++) {
-            for (int iz = 0; iz < nz; iz++) {
-                double cx = ix * spacing + random_double(-0.08, 0.08);
-                double cz = -2.0 - 110 * 0.52 - iz * spacing + random_double(-0.08, 0.08);
-                double cy = r + 0.05 * std::sin(cx * 1.2 + cz * 0.9);
-                world.add(make_shared<sphere>(point3(cx, cy, cz), r, silver_mirror));
-            }
-        }
+    for (auto& b : mediums) {
+        double cy = b.R;
+        world.add(make_shared<sphere>(point3(b.x, cy, b.z), b.R, b.mat));
     }
 
-    // Foam crests
-    for (int i = 0; i < 280; i++) {
-        double cx = random_double(-22.0, 22.0);
-        double cz = random_double(-5.0, -52.0);
-        double r = random_double(0.06, 0.16);
-        double cy = 0.30 + r + random_double(0.0, 0.18);
+    Ball smalls[] = {
+        {  1.6,  -0.6,  0.28,  gold_mirror    },
+        { -1.8,  -0.5,  0.24,  chrome_mirror  },
+        {  3.2,   0.2,  0.30,  rose_mirror    },
+        { -3.0,   0.0,  0.26,  gold_diffuse   },
+        {  0.8,   1.8,  0.22,  chrome_semi    },
+        { -0.6,   1.6,  0.26,  gold_semi      },
+        {  2.8,   2.0,  0.24,  chrome_mirror  },
+        { -2.5,   2.2,  0.28,  rose_diffuse   },
+        {  4.8,   0.5,  0.22,  gold_mirror    },
+        { -4.6,   0.8,  0.26,  chrome_diffuse },
+        {  1.0,   3.0,  0.20,  gold_mirror    },
+        { -1.2,   3.2,  0.24,  chrome_mirror  },
+    };
 
-        world.add(make_shared<sphere>(point3(cx, cy, cz), r, foam_mat));
+    for (auto& b : smalls) {
+        double cy = b.R;
+        world.add(make_shared<sphere>(point3(b.x, cy, b.z), b.R, b.mat));
     }
 
-    // Horizon rocks
-    struct Rock {
-        double x, z, r;
-    };
+    for (int i = 0; i < 80; i++) {
+        double angle = random_double(0, 2 * pi);
+        double dist  = random_double(0.5, 6.5);
+        double tx    = dist * std::cos(angle);
+        double tz    = dist * std::sin(angle);
+        double r     = random_double(0.06, 0.14);
 
-    Rock rocks[] = {
-        {-28.0, -72.0, 4.5},
-        {-18.0, -78.0, 3.2},
-        {-10.0, -68.0, 2.0},
-        {5.0, -74.0, 3.8},
-        {16.0, -70.0, 2.5},
-        {26.0, -76.0, 5.0},
-        {-36.0, -66.0, 6.0},
-        {34.0, -68.0, 5.5},
-    };
+        shared_ptr<material> mat;
+        double pick = random_double();
+        if      (pick < 0.30) mat = chrome_mirror;
+        else if (pick < 0.50) mat = chrome_diffuse;
+        else if (pick < 0.70) mat = gold_mirror;
+        else if (pick < 0.85) mat = gold_diffuse;
+        else                  mat = rose_mirror;
 
-    for (auto& rock : rocks)
-        world.add(make_shared<sphere>(
-            point3(rock.x, rock.r * 0.6, rock.z),
-            rock.r,
-            rock_mat
-        ));
-
-
-    // 5 mirror spheres - spread across the sea
-    struct MirrorSphere {
-        double x, y, z, r;
-    };
-
-    MirrorSphere mirrors[] = {
-        {-10.5, 2.8, -26.0, 1.8},
-        {-5.0, 2.2, -22.0, 2.2},
-        {0.0, 2.8, -32.0, 2.5},
-        {5.5, 2.0, -21.0, 2.0},
-        {11.0, 2.5, -27.0, 1.7},
-    };
-
-    for (auto& m : mirrors)
-        world.add(make_shared<sphere>(
-            point3(m.x, m.y, m.z),
-            m.r,
-            silver_mirror
-        ));
-
-    // Foreground sea extension - fill the black strip
-    {
-        double spacing = 0.48;
-        double r = 0.24;
-        int nx = 50;
-        int nz = 20;
-
-        for (int ix = -nx / 2; ix < nx / 2; ix++) {
-            for (int iz = 0; iz < nz; iz++) {
-                double cx = ix * spacing + random_double(-0.03, 0.03);
-                double cz = 6.0 - iz * spacing + random_double(-0.03, 0.03);
-                double wave = 0.05 * std::sin(cx * 2.0) * std::cos(cz * 1.5);
-                double cy = r + wave;
-                auto mat = ((ix + iz) % 3 == 0) ? silver_rough : silver_mirror;
-                world.add(make_shared<sphere>(point3(cx, cy, cz), r, mat));
-            }
-        }
+        world.add(make_shared<sphere>(point3(tx, r, tz), r, mat));
     }
 
     world = hittable_list(make_shared<bvh_node>(world));
 
     camera cam;
-    cam.aspect_ratio = 16.0 / 9.0;
-    cam.image_width = 1200;
-    cam.samples_per_pixel = 600;
-    cam.max_depth = 60;
-    cam.vfov = 28;
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 1200;
+    cam.samples_per_pixel = 500;
+    cam.max_depth         = 50;
 
-    cam.lookfrom = point3(0.0, 1.4, 14.0);
-    cam.lookat = point3(0.0, 2.0, -55.0);
-    cam.vup = vec3(0, 1, 0);
+    cam.vfov     = 45;
+    cam.lookfrom = point3(0.0, 6.0, 12.0);
+    cam.lookat   = point3(0.0, 0.8,  1.0);
+    cam.vup      = vec3(0, 1, 0);
 
-    cam.defocus_angle = 0.25;
-    cam.focus_dist = 40.0;
+    cam.defocus_angle = 0.0; 
+    cam.focus_dist    = 12.0;
 
     cam.render(world);
 }
