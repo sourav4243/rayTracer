@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-extern uint64_t ray_object_tests;
-extern uint64_t bvh_node_tests;
+extern thread_local uint64_t ray_object_tests;
+extern thread_local uint64_t bvh_node_tests;
 
 #endif
