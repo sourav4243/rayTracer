@@ -150,3 +150,14 @@ Redirect the output to a file and open it using any image viewer that supports P
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and
 suggested areas of improvement.
+
+
+## Star History:
+
+<a href="https://www.star-history.com/#sourav4243/rayTracer&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sourav4243/rayTracer&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=sourav4243/rayTracer&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sourav4243/rayTracer&type=Date" />
+ </picture>
+</a>
