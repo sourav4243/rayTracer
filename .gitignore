@@ -9,8 +9,14 @@ CMakeCache.txt
 *.obj
 *.o
 
-# *.ppm
+*.ppm
+render.cc
 
 # IDE files
 .vscode/
 .vs/
+
+# ignores all subfolders inside images/
+images/*/
+# re-includes files inside those folders so they stay tracked
+!images/*/*
